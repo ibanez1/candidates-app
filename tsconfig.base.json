@@ -17,12 +17,12 @@
     "paths": {
       "@org/api/products": ["libs/api/products/src/index.ts"],
       "@org/models": ["libs/shared/models/src/index.ts"],
-      "@org/shop/data": ["libs/shop/data/src/index.ts"],
-      "@org/shop/feature-product-detail": [
-        "libs/shop/feature-product-detail/src/index.ts"
+      "@org/candidates/data": ["libs/candidates/data/src/index.ts"],
+      "@org/candidates/feature-product-detail": [
+        "libs/candidates/feature-product-detail/src/index.ts"
       ],
-      "@org/shop/feature-products": ["libs/shop/feature-products/src/index.ts"],
-      "@org/shop/shared-ui": ["libs/shop/shared-ui/src/index.ts"],
+      "@org/candidates/feature-products": ["libs/candidates/feature-products/src/index.ts"],
+      "@org/candidates/shared-ui": ["libs/candidates/shared-ui/src/index.ts"],
       "@org/shared-types": ["shared-types/src/index.ts"],
       "@org/shared-utils": ["shared-utils/src/index.ts"]
     }

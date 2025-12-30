@@ -1,0 +1,20 @@
+{
+  "name": "feature-product-detail",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/candidates/feature-product-detail/src",
+  "prefix": "candidates",
+  "tags": ["scope:candidates", "type:feature"],
+  "targets": {
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "../../../coverage/libs/candidates/feature-product-detail"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}
