@@ -1,0 +1,10 @@
+[build]
+  command = "nx build candidates --configuration=production && nx build api --configuration=production"
+  publish = "dist/apps/candidates/browser"
+  functions = "dist/apps/api"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api"
+  status = 200
+  force = true
