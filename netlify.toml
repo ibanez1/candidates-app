@@ -15,7 +15,12 @@
   status = 200
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/"
+  to = "/products/index.html"
   status = 200
-  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/:splat/index.html"
+  status = 200
+  conditions = { Path = ["/*"] }
