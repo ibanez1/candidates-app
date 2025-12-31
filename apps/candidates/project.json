@@ -78,20 +78,12 @@
       "executor": "@nx/eslint:lint"
     },
     "test": {
-      "executor": "@nx/vitest:test",
+      "executor": "@nx/jest:jest",
       "outputs": ["{options.reportsDirectory}"],
       "options": {
+        "jestConfig": "apps/candidates/jest.config.ts",
+        "passWithNoTests": true,
         "reportsDirectory": "../../coverage/apps/candidates"
-      }
-    },
-    "serve-static": {
-      "continuous": true,
-      "executor": "@nx/web:file-server",
-      "options": {
-        "buildTarget": "candidates:build",
-        "port": 4200,
-        "staticFilePath": "dist/apps/candidates/browser",
-        "spa": true
       }
     }
   }

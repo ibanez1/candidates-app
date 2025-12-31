@@ -48,4 +48,3 @@ Thumbs.db
 .playwright-mcp
 
 vite.config.*.timestamp*
-vitest.config.*.timestamp*
