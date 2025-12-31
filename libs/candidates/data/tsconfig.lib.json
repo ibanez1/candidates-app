@@ -14,8 +14,6 @@
     "src/**/*.test.ts",
     "vite.config.ts",
     "vite.config.mts",
-    "vitest.config.ts",
-    "vitest.config.mts",
     "src/**/*.test.tsx",
     "src/**/*.spec.tsx",
     "src/**/*.test.js",

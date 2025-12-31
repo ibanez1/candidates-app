@@ -4,7 +4,7 @@ import { of } from 'rxjs';
 import { ProductListComponent } from './product-list.component';
 import { ProductsService } from '@org/candidates/data';
 import { Product } from '@org/models';
-import { describe, it, beforeEach, expect, vi } from 'vitest';
+// Jest provides globals; remove vitest import
 
 describe('ProductListComponent', () => {
   let component: ProductListComponent;
@@ -39,14 +39,14 @@ describe('ProductListComponent', () => {
 
   beforeEach(async () => {
     mockProductsService = {
-      getProducts: vi.fn(),
-      getCategories: vi.fn(),
-      loading: vi.fn().mockReturnValue(false),
-      error: vi.fn().mockReturnValue(null),
+      getProducts: jest.fn(),
+      getCategories: jest.fn(),
+      loading: jest.fn().mockReturnValue(false),
+      error: jest.fn().mockReturnValue(null),
     };
 
     mockRouter = {
-      navigate: vi.fn(),
+      navigate: jest.fn(),
     };
 
     await TestBed.configureTestingModule({

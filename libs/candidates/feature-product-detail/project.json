@@ -7,9 +7,11 @@
   "tags": ["scope:candidates", "type:feature"],
   "targets": {
     "test": {
-      "executor": "@nx/vitest:test",
+      "executor": "@nx/jest:jest",
       "outputs": ["{options.reportsDirectory}"],
       "options": {
+        "jestConfig": "libs/candidates/feature-product-detail/jest.config.ts",
+        "passWithNoTests": true,
         "reportsDirectory": "../../../coverage/libs/candidates/feature-product-detail"
       }
     },

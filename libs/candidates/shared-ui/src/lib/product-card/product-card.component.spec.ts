@@ -1,7 +1,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { ProductCardComponent } from './product-card.component';
 import { Product } from '@org/models';
-import { describe, it, beforeEach, expect, vi } from 'vitest';
+// Jest provides globals; remove vitest import
 
 describe('ProductCardComponent', () => {
   let component: ProductCardComponent;
@@ -43,7 +43,7 @@ describe('ProductCardComponent', () => {
   });
 
   it('should emit productClick event when card is clicked', () => {
-    const clickSpy = vi.fn();
+    const clickSpy = jest.fn();
     component.productClick.subscribe(clickSpy);
 
     fixture.nativeElement.querySelector('.product-card').click();

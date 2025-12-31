@@ -106,7 +106,7 @@ describe('ProductsService', () => {
       };
 
       // Silence console.error for this test
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
 
       service.getProducts().subscribe((response) => {
         expect(response.items).toEqual([]);
@@ -122,7 +122,7 @@ describe('ProductsService', () => {
 
     it('should handle network error', () => {
       // Silence console.error for this test
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
 
       service.getProducts().subscribe((response) => {
         expect(response.items).toEqual([]);
@@ -169,7 +169,7 @@ describe('ProductsService', () => {
 
     it('should return null on error', () => {
       // Silence console.error for this test
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
 
       service.getProductById('1').subscribe((product) => {
         expect(product).toBeNull();
@@ -202,7 +202,7 @@ describe('ProductsService', () => {
 
     it('should return empty array on error', () => {
       // Silence console.error for this test
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
 
       service.getCategories().subscribe((categories) => {
         expect(categories).toEqual([]);
@@ -234,7 +234,7 @@ describe('ProductsService', () => {
 
     it('should return default range on error', () => {
       // Silence console.error for this test
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
 
       service.getPriceRange().subscribe((range) => {
         expect(range).toEqual({ min: 0, max: 1000 });
@@ -262,7 +262,7 @@ describe('ProductsService', () => {
 
     it('should set error message on failure', () => {
       // Silence console.error for this test
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
       expect(service.error()).toBeNull();
 
       service.getProductById('1').subscribe(() => {

@@ -4,7 +4,7 @@ import { of, throwError } from 'rxjs';
 import { ProductDetailComponent } from './product-detail.component';
 import { ProductsService } from '@org/candidates/data';
 import { Product } from '@org/models';
-import { describe, it, beforeEach, expect, vi } from 'vitest';
+// Use Jest globals (no import needed)
 
 describe('ProductDetailComponent', () => {
   let component: ProductDetailComponent;
@@ -27,17 +27,17 @@ describe('ProductDetailComponent', () => {
 
   beforeEach(async () => {
     mockProductsService = {
-      getProductById: vi.fn(),
+      getProductById: jest.fn(),
     };
 
     mockRouter = {
-      navigate: vi.fn(),
+      navigate: jest.fn(),
     };
 
     mockActivatedRoute = {
       snapshot: {
         paramMap: {
-          get: vi.fn().mockReturnValue('1'),
+          get: jest.fn().mockReturnValue('1'),
         },
       },
     };
@@ -80,7 +80,7 @@ describe('ProductDetailComponent', () => {
   });
 
   it('should handle error when loading fails', () => {
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
     mockProductsService.getProductById.mockReturnValue(
       throwError(() => new Error('Network error'))
     );
@@ -101,8 +101,8 @@ describe('ProductDetailComponent', () => {
   });
 
   it('should handle add to cart action', () => {
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => undefined);
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => undefined);
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => undefined);
     component.product.set(mockProduct);
 
     component.addToCart();
