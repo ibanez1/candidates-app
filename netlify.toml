@@ -4,6 +4,12 @@
   functions = "dist/apps/api"
 
 [[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api"
   status = 200
