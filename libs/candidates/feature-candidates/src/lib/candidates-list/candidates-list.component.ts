@@ -51,7 +51,7 @@ import { CandidateFormComponent } from '@org/candidates/feature-candidate-form';
         </div>
       }
       <candidates-modal [open]="showModal()" (closed)="onModalClosed()">
-        <candidates-candidate-form />
+        <candidates-candidate-form (submittedSuccessfully)="onModalClosed()" />
       </candidates-modal>
 
         @if (hasMorePages()) {

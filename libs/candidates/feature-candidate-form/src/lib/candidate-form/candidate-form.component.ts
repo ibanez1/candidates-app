@@ -1,8 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal, Output, EventEmitter } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { createCandidate } from '@org/candidates/data';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { Candidate } from '@org/models';
 
 @Component({
   selector: 'candidates-candidate-form',
@@ -49,6 +52,9 @@ import { MatInputModule } from '@angular/material/input';
       width: 100%;
       margin-bottom: 0;
     }
+    input[matInput] {
+      padding-left: 16px;
+    }
     .add-candidate-btn {
       background: #e53935;
       color: white;
@@ -75,8 +81,12 @@ import { MatInputModule } from '@angular/material/input';
     }
   `]
 })
+
 export class CandidateFormComponent {
+  
+  @Output() submittedSuccessfully = new EventEmitter<void>();
   private readonly fb = new FormBuilder();
+  private readonly store = inject(Store);
   readonly form = signal(this.fb.group({
     name: ['', Validators.required],
     surname: ['', Validators.required],
@@ -86,7 +96,23 @@ export class CandidateFormComponent {
   onSubmit() {
     this.submitted = true;
     if (this.form().valid) {
-      alert('Submitted: ' + JSON.stringify(this.form().value));
+      // Crear un nuevo candidato con un id temporal (timestamp)
+      const { name, surname } = this.form().value;
+      const newCandidate: Candidate = {
+        id: Date.now(),
+        name: name as string ?? '',
+        surname: surname as string ?? '',
+        seniority: 'junior', // valor por defecto
+        years: 1,            // valor por defecto
+        availability: true   // valor por defecto
+      };
+      // Despachar la acción para añadirlo al principio
+      this.store.dispatch(createCandidate({ candidate: newCandidate }));
+      // Limpiar el formulario
+      this.form().reset();
+      this.submitted = false;
+      // Emitir evento para cerrar la modal
+      this.submittedSuccessfully.emit();
     } else {
       this.form().markAllAsTouched();
     }

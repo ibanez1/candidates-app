@@ -12,6 +12,9 @@ import {
   provideClientHydration,
   withEventReplay,
 } from '@angular/platform-browser';
+import { provideStore } from '@ngrx/store';
+import { provideState } from '@ngrx/store';
+import { candidatesFeature } from '@org/candidates/data';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,5 +24,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes),
     provideHttpClient(withFetch()),
     importProvidersFrom(BrowserAnimationsModule),
+    provideStore(),
+    provideState(candidatesFeature),
   ],
 };
