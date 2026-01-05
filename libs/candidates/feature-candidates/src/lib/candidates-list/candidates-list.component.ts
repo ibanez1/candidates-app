@@ -47,11 +47,38 @@ import { CandidateFormComponent } from '@org/candidates/feature-candidate-form';
           <candidates-grid
             [candidates]="candidates()"
             (candidateSelect)="onCandidateSelect($event)"
+            (deleteCandidate)="onDeleteCandidate($event)"
           />
         </div>
       }
-      <candidates-modal [open]="showModal()" (closed)="onModalClosed()">
+
+      <!-- Modal para crear candidato -->
+      <candidates-modal [open]="showModal() && !selectedCandidate() && !candidateToDelete()" (closed)="onModalClosed()">
         <candidates-candidate-form (submittedSuccessfully)="onModalClosed()" />
+      </candidates-modal>
+
+      <!-- Modal para ver detalle de candidato -->
+      <candidates-modal [open]="!!selectedCandidate()" (closed)="onCandidateModalClosed()">
+        <div *ngIf="selectedCandidate() as c" class="modal-content-custom">
+          <h2 class="modal-title">{{ c.name }} {{ c.surname }}</h2>
+          <p><strong>Seniority:</strong> {{ c.seniority }}</p>
+          <p><strong>Years:</strong> {{ c.years }}</p>
+          <p><strong>Available:</strong> {{ c.availability ? 'Yes' : 'No' }}</p>
+        </div>
+      </candidates-modal>
+
+      <!-- Modal de confirmación de borrado -->
+      <candidates-modal [open]="!!candidateToDelete()" (closed)="onDeleteModalClosed()">
+        <div *ngIf="candidateToDelete() as c" class="modal-content-custom">
+          <h2 class="modal-title">
+            <span>{{ c.name }} {{ c.surname }}</span>
+          </h2>
+          <p class="modal-delete-text">¿Estás seguro de que quieres eliminar el usuario?</p>
+          <div class="modal-btn-row">
+            <button class="add-candidate-btn modal-cancel-btn" (click)="onDeleteModalClosed()">Cancelar</button>
+            <button class="add-candidate-btn modal-delete-btn" (click)="confirmDeleteCandidate()">Borrar</button>
+          </div>
+        </div>
       </candidates-modal>
 
         @if (hasMorePages()) {
@@ -94,9 +121,37 @@ import { CandidateFormComponent } from '@org/candidates/feature-candidate-form';
       box-shadow: 0 2px 8px rgba(229, 57, 53, 0.08);
       transition: background 0.2s;
       margin-left: 30px;
+      min-width: 120px;
     }
     .add-candidate-btn:hover {
       background: #b71c1c;
+    }
+    .modal-content-custom {
+      padding: 24px;
+      min-width: 320px;
+    }
+    .modal-title {
+      margin-top: 0;
+    }
+    .modal-delete-text {
+      margin-top: 16px;
+      font-size: 1.1rem;
+    }
+    .modal-btn-row {
+      margin-top: 24px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 2px;
+    }
+    .modal-cancel-btn {
+      background: #fff !important;
+      color: #e53935 !important;
+      border: 2px solid #e53935 !important;
+    }
+    .modal-delete-btn {
+      background: #e53935 !important;
+      color: #fff !important;
+      border: none !important;
     }
     .candidates-grid-margin {
       margin-left: 32px;
@@ -271,6 +326,20 @@ export class CandidateListComponent implements OnInit {
 
   // Modal state
   readonly showModal = signal(false);
+  readonly selectedCandidate = signal<Candidate | null>(null);
+  readonly candidateToDelete = signal<Candidate | null>(null);
+  onDeleteCandidate(candidate: Candidate) {
+    this.candidateToDelete.set(candidate);
+  }
+
+  onDeleteModalClosed() {
+    this.candidateToDelete.set(null);
+  }
+
+  confirmDeleteCandidate() {
+    // Aquí iría la lógica para borrar el candidato
+    this.candidateToDelete.set(null);
+  }
 
   ngOnInit() {
     // this.loadCategories();
@@ -303,7 +372,11 @@ export class CandidateListComponent implements OnInit {
   }
 
   onCandidateSelect(candidate: Candidate) {
-    this.router.navigate(['/candidates', candidate.name]);
+    this.selectedCandidate.set(candidate);
+  }
+
+  onCandidateModalClosed() {
+    this.selectedCandidate.set(null);
   }
 
   nextPage() {

@@ -13,13 +13,7 @@ import { Candidate } from '@org/models';
     <div class="candidate-grid">
       <table #tableRef mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1" style="width:100%; table-layout: fixed;">
 
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header data-col="id">
-            ID
-            <div class="resize-handle" (pointerdown)="startResize($event, 'id')"></div>
-          </th>
-          <td mat-cell *matCellDef="let c" [attr.data-col]="'id'">{{ c.id }}</td>
-        </ng-container>
+
 
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef mat-sort-header data-col="name">
@@ -64,7 +58,21 @@ import { Candidate } from '@org/models';
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef data-col="actions"></th>
           <td mat-cell *matCellDef="let c" [attr.data-col]="'actions'">
-            <button mat-button (click)="candidateSelect.emit(c)">Select</button>
+            <button mat-button (click)="candidateSelect.emit(c)" aria-label="View" style="margin-right: 4px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 12C1 12 5 5 12 5C19 5 23 12 23 12C23 12 19 19 12 19C5 19 1 12 1 12Z" stroke="#333" stroke-width="2" fill="none"/>
+                <circle cx="12" cy="12" r="3.5" stroke="#333" stroke-width="2" fill="none"/>
+              </svg>
+            </button>
+            <button mat-button (click)="deleteCandidate.emit(c)" color="warn" aria-label="Delete">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 6h18" stroke="#e53935" stroke-width="2"/>
+                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="#e53935" stroke-width="2"/>
+                <rect x="5" y="6" width="14" height="14" rx="2" stroke="#e53935" stroke-width="2"/>
+                <path d="M10 11v6" stroke="#e53935" stroke-width="2"/>
+                <path d="M14 11v6" stroke="#e53935" stroke-width="2"/>
+              </svg>
+            </button>
           </td>
         </ng-container>
 
@@ -159,8 +167,9 @@ import { Candidate } from '@org/models';
 export class CandidateGridComponent implements AfterViewInit {
   readonly candidates = input.required<Candidate[]>();
   readonly candidateSelect = output<Candidate>();
+  readonly deleteCandidate = output<Candidate>();
 
-  readonly displayedColumns = ['id', 'name', 'surname', 'seniority', 'years', 'availability', 'actions'];
+  readonly displayedColumns = ['name', 'surname', 'seniority', 'years', 'availability', 'actions'];
 
   dataSource = new MatTableDataSource<Candidate>([]);
 
