@@ -5,62 +5,60 @@ test.describe('Navigation and User Flow', () => {
     // Start at home page
     await page.goto('/');
 
-    // Should redirect to products
-    await page.waitForURL('**/products');
+    // Should redirect to candidates
+    await page.waitForURL('**/candidates');
 
-    // Verify we're on products page
-    const productsHeading = page.locator('h1:has-text("Our Products")');
-    await expect(productsHeading).toBeVisible();
+    // Verify we're on candidates page
+    const candidatesHeading = page.locator('h1:has-text("Our Candidates")');
+    await expect(candidatesHeading).toBeVisible();
 
-    // Search for a specific product
+    // Search for a specific candidate
     const searchInput = page.locator('input[placeholder*="Search"]');
-    await searchInput.fill('Product 1');
-    await page.waitForFunction(() => document.querySelectorAll('[class*="product-card"]').length > 0);
+    await searchInput.fill('Candidate 1');
+    await page.waitForFunction(() => document.querySelectorAll('[class*="candidate-card"]').length > 0);
 
     // Click on the first search result
-    const firstResult = page.locator('[class*="product-card"]').first();
-    const productName = await firstResult.locator('h3').textContent();
+    const firstResult = page.locator('[class*="candidate-card"]').first();
+    const candidateName = await firstResult.locator('h3').textContent();
     await firstResult.click();
 
-    // Should navigate to product detail
-    await page.waitForURL('**/products/**');
+    // Should navigate to candidate detail
+    await page.waitForURL('**/candidates/**');
+    // Verify candidate detail page
+    const detailCandidateName = page.locator('h1').filter({ hasText: candidateName || '' });
+    await expect(detailCandidateName).toBeVisible();
 
-    // Verify product detail page
-    const detailProductName = page.locator('h1').filter({ hasText: productName || '' });
-    await expect(detailProductName).toBeVisible();
-
-    // Click back to products
-    const backLink = page.locator('a:has-text("Back to Products")');
+    // Click back to candidates
+    const backLink = page.locator('a:has-text("Back to Candidates")');
     await backLink.click();
 
-    // Should be back on products page
-    await page.waitForURL('**/products');
-    await expect(productsHeading).toBeVisible();
+    // Should be back on candidates page
+    await page.waitForURL('**/candidates');
+    await expect(candidatesHeading).toBeVisible();
 
     // The search should be cleared
     await expect(searchInput).toHaveValue('');
   });
 
   test('should handle navigation via header link', async ({ page }) => {
-    // Start on a product detail page
-    await page.goto('/products/prod-1');
+    // Start on a candidate detail page
+    await page.goto('/candidates/cand-1');
     await page.waitForLoadState('domcontentloaded');
 
-    // Click the Products link in the header
-    const headerProductsLink = page.locator('nav a:has-text("Products")');
-    await headerProductsLink.click();
+    // Click the Candidates link in the header
+    const headerCandidatesLink = page.locator('nav a:has-text("Candidates")');
+    await headerCandidatesLink.click();
 
-    // Should navigate to products listing
-    await page.waitForURL('**/products');
-
-    // Verify products page is loaded
-    const productsGrid = page.locator('[class*="product"]').first();
-    await expect(productsGrid).toBeVisible();
+    // Should navigate to candidates listing
+    await page.waitForURL('**/candidates');
+    // Verify candidates page is loaded
+    const candidatesGrid = page.locator('[class*="candidate"]').first();
+    await expect(candidatesGrid).toBeVisible();
   });
 
   test('should maintain filter state during navigation', async ({ page }) => {
-    // Go to products page
-    await page.goto('/products');
+    // Go to candidates page
+    await page.goto('/candidates');
     await page.waitForLoadState('domcontentloaded');
 
     // Apply filters
@@ -68,18 +66,17 @@ test.describe('Navigation and User Flow', () => {
     await categoryDropdown.selectOption('Electronics');
 
     const searchInput = page.locator('input[placeholder*="Search"]');
-    await searchInput.fill('Product');
+    await searchInput.fill('Candidate');
 
     // Wait for filtered results
-    await page.waitForFunction(() => document.querySelectorAll('[class*="product-card"]').length > 0);
+    await page.waitForFunction(() => document.querySelectorAll('[class*="candidate-card"]').length > 0);
 
-    // Navigate to a product
-    const product = page.locator('[class*="product-card"]').first();
-    await product.click();
+    // Navigate to a candidate
+    const candidate = page.locator('[class*="candidate-card"]').first();
+    await candidate.click();
 
-    // Wait for product detail page
-    await page.waitForURL('**/products/**');
-
+    // Wait for candidate detail page
+    await page.waitForURL('**/candidates/**');
     // Go back using browser back button
     await page.goBack();
 
@@ -90,55 +87,55 @@ test.describe('Navigation and User Flow', () => {
   });
 
   test('should handle rapid navigation', async ({ page }) => {
-    // Navigate to products
-    await page.goto('/products');
+    // Navigate to candidates
+    await page.goto('/candidates');
 
-    // Quickly click multiple products
+    // Quickly click multiple candidates
     for (let i = 0; i < 3; i++) {
-      const product = page.locator('[class*="product-card"]').nth(i);
-      await product.click();
-      await page.waitForURL('**/products/**');
+      const candidate = page.locator('[class*="candidate-card"]').nth(i);
+      await candidate.click();
+      await page.waitForURL('**/candidates/**');
 
       // Verify page loaded correctly
-      const productDetail = page.locator('h1').nth(1);
-      await expect(productDetail).toBeVisible();
+      const candidateDetail = page.locator('h1').nth(1);
+      await expect(candidateDetail).toBeVisible();
 
       // Go back
-      const backLink = page.locator('a:has-text("Back to Products")');
+      const backLink = page.locator('a:has-text("Back to Candidates")');
       await backLink.click();
-      await page.waitForURL('**/products');
+      await page.waitForURL('**/candidates');
     }
 
     // Should still be functional
-    const productsHeading = page.locator('h1:has-text("Our Products")');
-    await expect(productsHeading).toBeVisible();
+    const candidatesHeading = page.locator('h1:has-text("Our Candidates")');
+    await expect(candidatesHeading).toBeVisible();
   });
 
   test('should handle direct URL navigation', async ({ page }) => {
-    // Navigate directly to a product detail page
-    await page.goto('/products/prod-5');
+    // Navigate directly to a candidate detail page
+    await page.goto('/candidates/cand-5');
     await page.waitForLoadState('domcontentloaded');
 
-    // Should load the correct product
-    const productName = page.locator('h1').filter({ hasText: 'Product 5' });
-    await expect(productName).toBeVisible();
+    // Should load the correct candidate
+    const candidateName = page.locator('h1').filter({ hasText: 'Candidate 5' });
+    await expect(candidateName).toBeVisible();
 
-    // Navigate directly to products page
-    await page.goto('/products');
+    // Navigate directly to candidates page
+    await page.goto('/candidates');
     await page.waitForLoadState('domcontentloaded');
 
-    // Should show products listing
-    const productsGrid = page.locator('[class*="product-card"]');
-    const count = await productsGrid.count();
+    // Should show candidates listing
+    const candidatesGrid = page.locator('[class*="candidate-card"]');
+    const count = await candidatesGrid.count();
     expect(count).toBeGreaterThan(0);
 
-    // Navigate to non-existent route should redirect to products
+    // Navigate to non-existent route should redirect to candidates
     await page.goto('/non-existent-route');
-    await page.waitForURL('**/products');
+    await page.waitForURL('**/candidates');
 
-    // Should be on products page
-    const productsHeading = page.locator('h1:has-text("Our Products")');
-    await expect(productsHeading).toBeVisible();
+    // Should be on candidates page
+    const candidatesHeading = page.locator('h1:has-text("Our Candidates")');
+    await expect(candidatesHeading).toBeVisible();
   });
 
   test('should display loading states during navigation', async ({ page }) => {
@@ -147,16 +144,16 @@ test.describe('Navigation and User Flow', () => {
       setTimeout(() => route.continue(), 100);
     });
 
-    await page.goto('/products');
+    await page.goto('/candidates');
 
-    // Click on a product
-    const product = page.locator('[class*="product-card"]').first();
-    await product.click();
+    // Click on a candidate
+    const candidate = page.locator('[class*="candidate-card"]').first();
+    await candidate.click();
 
-    // Should eventually load the product detail
-    await page.waitForURL('**/products/**', { timeout: 10000 });
+    // Should eventually load the candidate detail
+    await page.waitForURL('**/candidates/**', { timeout: 10000 });
 
-    const productDetail = page.locator('[class*="product-detail"]');
-    await expect(productDetail).toBeVisible({ timeout: 10000 });
+    const candidateDetail = page.locator('[class*="candidate-detail"]');
+    await expect(candidateDetail).toBeVisible({ timeout: 10000 });
   });
 });

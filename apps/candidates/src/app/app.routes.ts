@@ -3,23 +3,23 @@ import { Route } from '@angular/router';
 export const appRoutes: Route[] = [
   {
     path: '',
-    redirectTo: 'products',
+    redirectTo: 'candidates',
     pathMatch: 'full',
   },
   {
-    path: 'products',
+    path: 'candidates',
     loadChildren: () =>
-      import('@org/candidates/feature-products').then(m => m.featureProductsRoutes),
+      import('@org/candidates/feature-candidates').then(m => m.featureCandidatesRoutes),
   },
   {
-    path: 'products',
+    path: 'candidates',
     loadChildren: () =>
-      import('@org/candidates/feature-product-detail').then(
-        m => m.featureProductDetailRoutes
+      import('@org/candidates/feature-candidate-detail').then(
+        m => m.featureCandidateDetailRoutes
       ),
   },
   {
     path: '**',
-    redirectTo: 'products',
+    redirectTo: 'candidates',
   },
 ];

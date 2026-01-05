@@ -11,8 +11,8 @@
     "build": "nx build api && nx build candidates",
     "build:prod": "nx build candidates --configuration=production && nx build api --configuration=production && npm run copy-functions",
     "copy-functions": "copy apps\\api\\src\\main.serverless.js dist\\functions\\api.js",
-    "test:unit": "nx test candidates",
-    "test:unit:watch": "nx test candidates --watch",
+    "test:unit:front": "nx run-many --target=test --all --exclude=api,api-e2e --parallel",
+    "test:unit:front:watch": "test:unit:front --watch",
     "test:api": "nx test api",
     "test:api:watch": "nx test api --watch",
     "test:api:cov": "nx test api --codeCoverage",
@@ -42,6 +42,10 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "~7.8.0",
     "zone.js": "0.16.0"
+    ,
+    "@angular/animations": "21.0.6",
+    "@angular/material": "^21.0.0",
+    "@angular/cdk": "^21.0.0"
   },
   "devDependencies": {
     "@analogjs/vite-plugin-angular": "~2.1.2",

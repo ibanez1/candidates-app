@@ -1,0 +1,22 @@
+{
+  "name": "feature-candidates",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/candidates/feature-candidates/src",
+  "prefix": "candidates",
+  "tags": ["scope:candidates", "type:feature"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "jestConfig": "libs/candidates/feature-candidates/jest.config.ts",
+        "passWithNoTests": true,
+        "reportsDirectory": "../../../coverage/libs/candidates/feature-candidates"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

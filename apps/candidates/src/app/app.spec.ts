@@ -31,9 +31,9 @@ describe('App', () => {
   it('should render navigation links', () => {
     const navLinks = fixture.debugElement.queryAll(By.css('nav a'));
     expect(navLinks.length).toBeGreaterThan(0);
-    expect(navLinks[0].nativeElement.textContent).toContain('Products');
+    expect(navLinks[0].nativeElement.textContent).toContain('Candidates');
     expect(navLinks[0].nativeElement.getAttribute('routerLink')).toBe(
-      '/products'
+      '/candidates'
     );
   });
 

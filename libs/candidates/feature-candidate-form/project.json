@@ -1,0 +1,22 @@
+{
+  "name": "feature-candidate-form",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/candidates/feature-candidate-form/src",
+  "prefix": "candidates",
+  "tags": ["scope:candidates", "type:feature"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "jestConfig": "libs/candidates/feature-candidate-form/jest.config.ts",
+        "passWithNoTests": true,
+        "reportsDirectory": "../../../coverage/libs/candidates/feature-candidate-form"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

@@ -15,13 +15,14 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@org/api/products": ["libs/api/products/src/index.ts"],
+      "@org/api/candidates": ["libs/api/candidates/src/index.ts"],
       "@org/models": ["libs/shared/models/src/index.ts"],
       "@org/candidates/data": ["libs/candidates/data/src/index.ts"],
-      "@org/candidates/feature-product-detail": [
-        "libs/candidates/feature-product-detail/src/index.ts"
+      "@org/candidates/feature-candidate-detail": [
+        "libs/candidates/feature-candidate-detail/src/index.ts"
       ],
-      "@org/candidates/feature-products": ["libs/candidates/feature-products/src/index.ts"],
+      "@org/candidates/feature-candidates": ["libs/candidates/feature-candidates/src/index.ts"],
+      "@org/candidates/feature-candidate-form": ["libs/candidates/feature-candidate-form/src/index.ts"],
       "@org/candidates/shared-ui": ["libs/candidates/shared-ui/src/index.ts"],
       "@org/shared-types": ["shared-types/src/index.ts"],
       "@org/shared-utils": ["shared-utils/src/index.ts"]

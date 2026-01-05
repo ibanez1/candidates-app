@@ -10,13 +10,13 @@
   force = true
 
 [[redirects]]
-  from = "/products"
-  to = "/products/index.html"
+  from = "/candidates"
+  to = "/candidates/index.html"
   status = 200
 
 [[redirects]]
   from = "/"
-  to = "/products/index.html"
+  to = "/candidates/index.html"
   status = 200
 
 [[redirects]]
