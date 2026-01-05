@@ -32,9 +32,35 @@ export const loadCandidates = createAction('[Candidates] Load Candidates');
 export const setCandidates = createAction('[Candidates] Set Candidates', props<{ candidates: Candidate[] }>());
 export const createCandidate = createAction('[Candidates] Create Candidate', props<{ candidate: Candidate }>());
 
-export const candidatesFeature = createFeature({
-  name: 'candidates',
-  reducer: createReducer(
+
+// Meta-reducer para persistencia en sessionStorage
+function sessionStorageMetaReducer(reducer: any): any {
+  return function (state: any, action: any) {
+    let nextState = state;
+    // Al iniciar, intenta hidratar desde sessionStorage
+    if (state === undefined && typeof sessionStorage !== 'undefined') {
+      const stored = sessionStorage.getItem('candidatesState');
+      if (stored) {
+        try {
+          nextState = JSON.parse(stored);
+        } catch (e) {
+          nextState = undefined;
+          return e;
+        }
+      }
+    }
+    const newState = reducer(nextState, action);
+    // Guarda en sessionStorage tras cada acción
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem('candidatesState', JSON.stringify(newState));
+    }
+    return newState;
+  };
+}
+
+
+const candidatesReducer = sessionStorageMetaReducer(
+  createReducer(
     initialState,
     on(setCandidates, (state, { candidates }) => ({ ...state, candidates })),
     on(createCandidate, (state, { candidate }) => ({
@@ -42,4 +68,12 @@ export const candidatesFeature = createFeature({
       candidates: [candidate, ...state.candidates]
     }))
   )
+);
+
+export const candidatesFeature = createFeature<
+  'candidates',
+  CandidatesState
+>({
+  name: 'candidates',
+  reducer: candidatesReducer
 });
