@@ -1,7 +1,8 @@
 import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CandidatesService } from '@org/candidates/data';
+import { Store } from '@ngrx/store';
+import { CandidatesService, deleteCandidate } from '@org/candidates/data';
 import { Candidate } from '@org/models';
 import {
   CandidateGridComponent,
@@ -83,6 +84,7 @@ import { CandidateFormComponent } from '@org/candidates/feature-candidate-form';
 })
 export class CandidateListComponent implements OnInit {
   private readonly candidatesService = inject(CandidatesService);
+  private readonly store = inject(Store);
 
   readonly candidates = signal<Candidate[]>([]);
   readonly loading = signal(false);
@@ -100,7 +102,10 @@ export class CandidateListComponent implements OnInit {
   }
 
   confirmDeleteCandidate() {
-    // Aquí iría la lógica para borrar el candidato
+    const candidate = this.candidateToDelete();
+    if (candidate) {
+      this.store.dispatch(deleteCandidate({ id: candidate.id }));
+    }
     this.candidateToDelete.set(null);
   }
 
