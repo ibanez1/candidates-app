@@ -31,55 +31,7 @@ import { Candidate } from '@org/models';
       <button type="submit" class="add-candidate-btn">Submit</button>
     </form>
   `,
-  styles: [`
-        mat-error {
-          color: #e53935 !important;
-          font-size: 0.97rem;
-          margin-left: 0;
-          padding-left: 0;
-          text-align: left;
-          width: 100%;
-          display: block;
-        }
-    form {
-      max-width: 400px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-    .form-field {
-      width: 100%;
-      margin-bottom: 0;
-    }
-    input[matInput] {
-      padding-left: 16px;
-    }
-    .add-candidate-btn {
-      background: #e53935;
-      color: white;
-      border: none;
-      border-radius: 24px;
-      padding: 10px 28px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(229, 57, 53, 0.08);
-      transition: background 0.2s;
-      margin-left: 0;
-    }
-    .add-candidate-btn:hover {
-      background: #b71c1c;
-    }
-    :host ::ng-deep .form-field-error-wrapper,
-    :host ::ng-deep .mat-mdc-form-field-error-wrapper {
-      padding-left: 0 !important;
-      padding-right: 0 !important;
-    }
-    .form-title {
-      margin-top: 10px;
-    }
-  `]
+  styleUrls: ['./candidate-form.component.css']
 })
 
 export class CandidateFormComponent {

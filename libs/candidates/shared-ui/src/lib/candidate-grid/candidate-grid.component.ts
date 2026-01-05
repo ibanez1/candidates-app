@@ -12,9 +12,6 @@ import { Candidate } from '@org/models';
   template: `
     <div class="candidate-grid">
       <table #tableRef mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1" style="width:100%; table-layout: fixed;">
-
-
-
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef mat-sort-header data-col="name">
             Name
@@ -93,75 +90,7 @@ import { Candidate } from '@org/models';
       }
     </div>
   `,
-  styles: [`
-    .candidate-grid {
-      padding: 24px 0;
-    }
-
-    .no-candidates {
-      text-align: center;
-      padding: 48px 0;
-      color: #666;
-      font-size: 1.1rem;
-    }
-
-    /* Make header text bold with increased specificity to override Material defaults */
-    th.mat-header-cell,
-    .mat-header-row th.mat-header-cell,
-    .mat-sort-header,
-    .mat-sort-header-button,
-    .mat-sort-header .mat-sort-header-container {
-      font-weight: 700 !important;
-    }
-
-    table.mat-elevation-z1 {
-      width: 100%;
-      border-collapse: collapse;
-      margin-left: 10px;
-      margin-right: 10px;
-    }
-
-    /* column separators */
-    th.mat-header-cell,
-    td[data-col] {
-      border-right: 1px solid rgba(0, 0, 0, 0.12);
-      box-sizing: border-box;
-    }
-
-    /* remove separator on last column */
-    th.mat-header-cell:last-child,
-    td[data-col]:last-child {
-      border-right: none;
-    }
-    /* resize handle: hidden by default, visible on header hover */
-    th.mat-header-cell { position: relative; }
-    .resize-handle {
-      position: absolute;
-      right: -6px;
-      top: 0;
-      height: 100%;
-      width: 12px;
-      cursor: col-resize;
-      z-index: 20;
-      opacity: 0;
-      transition: opacity 120ms ease-in-out, background 120ms;
-      background: transparent;
-      pointer-events: auto;
-    }
-    th.mat-header-cell:hover .resize-handle,
-    th.mat-header-cell:active .resize-handle {
-      opacity: 1;
-      background: rgba(0,0,0,0.06);
-    }
-    .paginator-wrap {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
-    }
-    .paginator-wrap.bottom { margin-top: 8px; }
-
-  `],
+  styleUrls: ['./candidate-grid.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CandidateGridComponent implements AfterViewInit {
