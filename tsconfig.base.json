@@ -18,9 +18,6 @@
       "@org/api/candidates": ["libs/api/candidates/src/index.ts"],
       "@org/models": ["libs/shared/models/src/index.ts"],
       "@org/candidates/data": ["libs/candidates/data/src/index.ts"],
-      "@org/candidates/feature-candidate-detail": [
-        "libs/candidates/feature-candidate-detail/src/index.ts"
-      ],
       "@org/candidates/feature-candidates": ["libs/candidates/feature-candidates/src/index.ts"],
       "@org/candidates/feature-candidate-form": ["libs/candidates/feature-candidate-form/src/index.ts"],
       "@org/candidates/shared-ui": ["libs/candidates/shared-ui/src/index.ts"],

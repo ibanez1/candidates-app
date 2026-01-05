@@ -96,7 +96,6 @@ export class CandidateFormComponent {
   onSubmit() {
     this.submitted = true;
     if (this.form().valid) {
-      // Crear un nuevo candidato con un id temporal (timestamp)
       const { name, surname } = this.form().value;
       const newCandidate: Candidate = {
         id: Date.now(),
@@ -106,12 +105,9 @@ export class CandidateFormComponent {
         years: 1,            // valor por defecto
         availability: true   // valor por defecto
       };
-      // Despachar la acción para añadirlo al principio
       this.store.dispatch(createCandidate({ candidate: newCandidate }));
-      // Limpiar el formulario
       this.form().reset();
       this.submitted = false;
-      // Emitir evento para cerrar la modal
       this.submittedSuccessfully.emit();
     } else {
       this.form().markAllAsTouched();

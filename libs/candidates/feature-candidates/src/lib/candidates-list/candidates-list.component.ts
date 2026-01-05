@@ -41,7 +41,6 @@ import { CandidateFormComponent } from '@org/candidates/feature-candidate-form';
         <div class="add-candidate-row">
           <button class="add-candidate-btn" (click)="onAddCandidate()">Add Candidate</button>
         </div>
-        <!-- Modal se mueve fuera del flujo de la grid para overlay correcto -->
 
         <div class="candidates-grid-margin">
           <candidates-grid
@@ -52,12 +51,10 @@ import { CandidateFormComponent } from '@org/candidates/feature-candidate-form';
         </div>
       }
 
-      <!-- Modal para crear candidato -->
       <candidates-modal [open]="showModal() && !selectedCandidate() && !candidateToDelete()" (closed)="onModalClosed()">
         <candidates-candidate-form (submittedSuccessfully)="onModalClosed()" />
       </candidates-modal>
 
-      <!-- Modal para ver detalle de candidato -->
       <candidates-modal [open]="!!selectedCandidate()" (closed)="onCandidateModalClosed()">
         <div *ngIf="selectedCandidate() as c" class="modal-content-custom">
           <h2 class="modal-title">{{ c.name }} {{ c.surname }}</h2>
@@ -67,7 +64,6 @@ import { CandidateFormComponent } from '@org/candidates/feature-candidate-form';
         </div>
       </candidates-modal>
 
-      <!-- Modal de confirmación de borrado -->
       <candidates-modal [open]="!!candidateToDelete()" (closed)="onDeleteModalClosed()">
         <div *ngIf="candidateToDelete() as c" class="modal-content-custom">
           <h2 class="modal-title">
@@ -81,27 +77,6 @@ import { CandidateFormComponent } from '@org/candidates/feature-candidate-form';
         </div>
       </candidates-modal>
 
-        @if (hasMorePages()) {
-          <div class="pagination">
-            <button
-              class="btn-secondary"
-              [disabled]="currentPage() === 1"
-              (click)="previousPage()"
-            >
-              Previous
-            </button>
-            <span class="page-info">
-              Page {{ currentPage() }} of {{ totalPages() }}
-            </span>
-            <button
-              class="btn-secondary"
-              [disabled]="currentPage() === totalPages()"
-              (click)="nextPage()"
-            >
-              Next
-            </button>
-          </div>
-        }
     </div>
   `,
   styles: [`
@@ -305,26 +280,11 @@ import { CandidateFormComponent } from '@org/candidates/feature-candidate-form';
 })
 export class CandidateListComponent implements OnInit {
   private readonly candidatesService = inject(CandidatesService);
-  private readonly router = inject(Router);
 
-  // State signals
   readonly candidates = signal<Candidate[]>([]);
-  readonly totalCandidates = signal(0);
-  readonly currentPage = signal(1);
-  readonly totalPages = signal(0);
-  readonly categories = signal<string[]>([]);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
 
-  // Filter state
-  searchTerm = '';
-  selectedCategory = '';
-  inStockOnly = false;
-
-  // Computed values
-  readonly hasMorePages = computed(() => this.totalPages() > 1);
-
-  // Modal state
   readonly showModal = signal(false);
   readonly selectedCandidate = signal<Candidate | null>(null);
   readonly candidateToDelete = signal<Candidate | null>(null);
@@ -342,7 +302,6 @@ export class CandidateListComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.loadCategories();
     this.loadCandidates();
   }
 
@@ -377,19 +336,5 @@ export class CandidateListComponent implements OnInit {
 
   onCandidateModalClosed() {
     this.selectedCandidate.set(null);
-  }
-
-  nextPage() {
-    if (this.currentPage() < this.totalPages()) {
-      // this.currentPage.update(page => page + 1);
-      // this.loadCandidates();
-    }
-  }
-
-  previousPage() {
-    if (this.currentPage() > 1) {
-      // this.currentPage.update(page => page - 1);
-      // this.loadCandidates();
-    }
   }
 }

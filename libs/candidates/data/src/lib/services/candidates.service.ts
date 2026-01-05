@@ -21,7 +21,6 @@ export class CandidatesService {
   readonly error = this.errorSignal.asReadonly();
 
   getCandidates() {
-    // Devuelve los candidatos del store NGRX como observable
     return this.store.select(candidatesFeature.selectCandidates).pipe(
       map(candidates => ({ items: candidates }))
     );
