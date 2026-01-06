@@ -15,6 +15,8 @@ async function bootstrap() {
     origin: ['http://localhost:4200', 'https://candidates-tool.netlify.app'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    exposedHeaders: ['Content-Disposition'],
   });
   
   const globalPrefix = 'api';

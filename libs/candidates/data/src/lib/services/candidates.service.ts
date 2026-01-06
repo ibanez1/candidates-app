@@ -26,12 +26,22 @@ export class CandidatesService {
     );
   }
 
-  createCandidate(candidate: Candidate): Observable<Candidate | null> {
+  createCandidate(candidateInfo: any): Observable<Candidate | null> {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
+    // Create FormData to send file properly
+    const formData = new FormData();
+    formData.append('id', candidateInfo.id.toString());
+    formData.append('name', candidateInfo.name);
+    formData.append('surname', candidateInfo.surname);
+    
+    if (candidateInfo.excel) {
+      formData.append('excel', candidateInfo.excel, candidateInfo.excel.name);
+    }
+
     return this.http
-      .post<ApiResponse<Candidate>>(`${this.apiUrl}/candidates`, candidate)
+      .post<ApiResponse<Candidate>>(`${this.apiUrl}/candidates`, formData)
       .pipe(
         map((response) => {
           this.loadingSignal.set(false);

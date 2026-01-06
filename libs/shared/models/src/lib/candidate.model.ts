@@ -11,7 +11,7 @@ export interface CandidateInfo {
   id: number;
   name: string;
   surname: string;
-  excel: File;
+  excel: File | Buffer;
 }
 
 export interface ApiResponse<T> {
