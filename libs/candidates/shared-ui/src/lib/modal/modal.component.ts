@@ -7,8 +7,8 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     @if (open) {
-      <div #backdrop class="modal-backdrop" tabindex="0" (keyup.enter)="onBackdropClick()" (click)="onBackdropClick()">
-        <div class="modal-content" tabindex="0" (keyup.enter)="$event.stopPropagation()" (click)="$event.stopPropagation()">
+      <div #backdrop class="modal-backdrop" tabindex="0">
+        <div class="modal-content" tabindex="0" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
           <button class="modal-close" tabindex="0" (click)="closed.emit()" (keyup.enter)="closed.emit()" (keydown.enter)="closed.emit()" aria-label="Cerrar modal">&times;</button>
           <ng-content></ng-content>
         </div>
