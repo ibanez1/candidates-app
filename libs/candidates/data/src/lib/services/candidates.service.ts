@@ -42,9 +42,9 @@ export class CandidatesService {
         }),
         catchError((error) => {
           this.loadingSignal.set(false);
-          this.errorSignal.set(
-            error.message || 'An error occurred while creating the candidate',
-          );
+          // Extract error message from backend response
+          const errorMessage = error.error?.error || error.message || 'An error occurred while creating the candidate';
+          this.errorSignal.set(errorMessage);
           console.error('Error creating candidate:', error);
           return of(null);                  
         }),

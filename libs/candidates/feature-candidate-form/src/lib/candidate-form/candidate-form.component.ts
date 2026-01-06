@@ -9,7 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { CandidateInfo } from '@org/models';
 import { LoadingSpinnerComponent } from '@org/candidates/shared-ui';
 import * as XLSX from 'xlsx';
-import { forkJoin, timer } from 'rxjs';
+import { forkJoin, timer, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'candidates-candidate-form',
@@ -29,6 +30,7 @@ import { forkJoin, timer } from 'rxjs';
         <div class="status-icon error-icon">✕</div>
         <h2 class="status-title">Error</h2>
         <p class="status-text">{{ errorMessage() }}</p>
+        <button class="error-close-btn" (click)="closeError()">Close</button>
       </div>
     } @else {
       <form [formGroup]="form()" (ngSubmit)="onSubmit()" novalidate>
@@ -318,6 +320,11 @@ export class CandidateFormComponent {
     this.excelFile = null;
   }
 
+  closeError(): void {
+    this.submitStatus.set('idle');
+    this.errorMessage.set('');
+  }
+
   onSubmit() {
     this.submitted = true;
     if (this.form().valid && this.excelFile) {
@@ -331,14 +338,35 @@ export class CandidateFormComponent {
         excel: this.excelFile
       };
       
-      const createRequest = this.candidatesService.createCandidate(newCandidate as any);
+      const createRequest = this.candidatesService.createCandidate(newCandidate as any).pipe(
+        catchError(err => of({ error: err, success: false }))
+      );
       const minDelay = timer(1500);
       
       forkJoin([createRequest, minDelay]).subscribe({
         next: ([result]) => {
           this.isLoading.set(false);
-          if (result) {
-            this.store.dispatch(createCandidate({ candidate: result }));
+          
+          if (!result || (result && 'error' in result && !result.success)) {
+            // Error case - result is null or has error property
+            const serviceError = this.candidatesService.error();
+            const componentError = result && 'error' in result ? result.error : null;
+            
+            this.submitStatus.set('error');
+            
+            // Priority: 1) Service error signal, 2) Component catchError, 3) Generic message
+            if (serviceError) {
+              this.errorMessage.set(serviceError);
+            } else if (componentError) {
+              this.errorMessage.set(componentError.error?.error || componentError.message || 'An error occurred while creating the candidate');
+            } else {
+              this.errorMessage.set('An error occurred while creating the candidate');
+            }
+            
+            console.error('Error creating candidate:', componentError || serviceError);
+          } else {
+            // Success case
+            this.store.dispatch(createCandidate({ candidate: result as any }));
             this.submitStatus.set('success');
             this.form().reset();
             this.submitted = false;
@@ -349,16 +377,6 @@ export class CandidateFormComponent {
               this.submittedSuccessfully.emit();
             }, 2000);
           }
-        },
-        error: (err) => {
-          this.isLoading.set(false);
-          this.submitStatus.set('error');
-          this.errorMessage.set(err.error?.error || err.message || 'An error occurred while creating the candidate');
-          console.error('Error creating candidate:', err);
-          
-          setTimeout(() => {
-            this.submitStatus.set('idle');
-          }, 3000);
         }
       });
     } else {
