@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="spinner-container">
       <div class="spinner"></div>
-      <p>Loading...</p>
+      <p>Creating Candidate....</p>
     </div>
   `,
   styleUrls: ['./loading-spinner.component.css'],

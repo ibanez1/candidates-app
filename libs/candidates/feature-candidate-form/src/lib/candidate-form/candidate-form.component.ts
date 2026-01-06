@@ -7,14 +7,31 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { CandidateInfo } from '@org/models';
+import { LoadingSpinnerComponent } from '@org/candidates/shared-ui';
 import * as XLSX from 'xlsx';
+import { forkJoin, timer } from 'rxjs';
 
 @Component({
   selector: 'candidates-candidate-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, LoadingSpinnerComponent],
   template: `
-    <form [formGroup]="form()" (ngSubmit)="onSubmit()" novalidate>
+    @if (isLoading()) {
+      <candidates-loading-spinner />
+    } @else if (submitStatus() === 'success') {
+      <div class="status-message success-message">
+        <div class="status-icon success-icon">✓</div>
+        <h2 class="status-title">Success</h2>
+        <p class="status-text">Candidate created!</p>
+      </div>
+    } @else if (submitStatus() === 'error') {
+      <div class="status-message error-message">
+        <div class="status-icon error-icon">✕</div>
+        <h2 class="status-title">Error</h2>
+        <p class="status-text">{{ errorMessage() }}</p>
+      </div>
+    } @else {
+      <form [formGroup]="form()" (ngSubmit)="onSubmit()" novalidate>
       <h2 class="form-title">Add Candidate</h2>
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Name</mat-label>
@@ -84,6 +101,7 @@ import * as XLSX from 'xlsx';
 
       <button type="submit" class="add-candidate-btn">Submit</button>
     </form>
+    }
   `,
   styleUrls: ['./candidate-form.component.css']
 })
@@ -103,6 +121,9 @@ export class CandidateFormComponent {
   readonly selectedFileName = signal<string>('');
   readonly fileValidationMessage = signal<string>('');
   readonly fileValidationSuccess = signal<boolean>(false);
+  readonly isLoading = signal<boolean>(false);
+  readonly submitStatus = signal<'idle' | 'success' | 'error'>('idle');
+  readonly errorMessage = signal<string>('');
   excelFile: File | null = null;
 
   onFileChange(event: Event): void {
@@ -300,6 +321,8 @@ export class CandidateFormComponent {
   onSubmit() {
     this.submitted = true;
     if (this.form().valid && this.excelFile) {
+      this.isLoading.set(true);
+      this.submitStatus.set('idle');
       const { name, surname } = this.form().value;
       const newCandidate: CandidateInfo = {
         id: Date.now(),
@@ -307,18 +330,35 @@ export class CandidateFormComponent {
         surname: surname as string ?? '',
         excel: this.excelFile
       };
-      this.candidatesService.createCandidate(newCandidate as any).subscribe({
-        next: (result) => {
+      
+      const createRequest = this.candidatesService.createCandidate(newCandidate as any);
+      const minDelay = timer(1500);
+      
+      forkJoin([createRequest, minDelay]).subscribe({
+        next: ([result]) => {
+          this.isLoading.set(false);
           if (result) {
             this.store.dispatch(createCandidate({ candidate: result }));
+            this.submitStatus.set('success');
             this.form().reset();
             this.submitted = false;
             this.resetFileValidation();
-            this.submittedSuccessfully.emit();
+            
+            setTimeout(() => {
+              this.submitStatus.set('idle');
+              this.submittedSuccessfully.emit();
+            }, 2000);
           }
         },
         error: (err) => {
+          this.isLoading.set(false);
+          this.submitStatus.set('error');
+          this.errorMessage.set(err.error?.error || err.message || 'An error occurred while creating the candidate');
           console.error('Error creating candidate:', err);
+          
+          setTimeout(() => {
+            this.submitStatus.set('idle');
+          }, 3000);
         }
       });
     } else {
