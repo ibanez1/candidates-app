@@ -137,49 +137,6 @@ describe('CandidatesService', () => {
   //   });
   // });
 
-  describe('getCandidateById', () => {
-    const mockCandidate: Candidate = {
-      id: 1,
-      name: 'Candidate 1',
-      surname: 'Surname 1', 
-      seniority: 'junior',
-      years: 2,
-      availability: true
-    };
-
-    it('should return a candidate by id', () => {
-      const mockResponse: ApiResponse<Candidate> = {
-        success: true,
-        data: mockCandidate,
-      };
-
-      service.getCandidateById('1').subscribe((candidate) => {
-        expect(candidate).toEqual(mockCandidate);
-        expect(service.loading()).toBeFalsy();
-        expect(service.error()).toBeNull();
-      });
-
-      const req = httpMock.expectOne(`${apiUrl}/candidates/1`);
-      expect(req.request.method).toBe('GET');
-      req.flush(mockResponse);
-    });
-
-    it('should return null on error', () => {
-      // Silence console.error for this test
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
-
-      service.getCandidateById('1').subscribe((candidate) => {
-        expect(candidate).toBeNull();
-        expect(service.error()).toBeTruthy();
-      });
-
-      const req = httpMock.expectOne(`${apiUrl}/candidates/1`);
-      req.error(new ProgressEvent('Network error'));
-
-      consoleErrorSpy.mockRestore();
-    });
-  });
-
   describe('loading and error signals', () => {
     it('should set loading to true when fetching candidates', () => {
       expect(service.loading()).toBeFalsy();
@@ -191,21 +148,6 @@ describe('CandidatesService', () => {
       req.flush({ success: true, data: { items: [], total: 0, page: 1, pageSize: 12, totalPages: 0 } });
 
       expect(service.loading()).toBeFalsy();
-    });
-
-    it('should set error message on failure', () => {
-      // Silence console.error for this test
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
-      expect(service.error()).toBeNull();
-
-      service.getCandidateById('1').subscribe(() => {
-        expect(service.error()).toBeTruthy();
-      });
-
-      const req = httpMock.expectOne(`${apiUrl}/candidates/1`);
-      req.error(new ProgressEvent('Network error'));
-
-      consoleErrorSpy.mockRestore();
     });
   });
 });

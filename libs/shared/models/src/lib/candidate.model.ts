@@ -11,7 +11,7 @@ export interface CandidateInfo {
   id: number;
   name: string;
   surname: string;
-  excel: any;
+  excel?: any;
 }
 
 export interface ApiResponse<T> {

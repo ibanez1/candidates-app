@@ -1,6 +1,6 @@
 import { Component, inject, signal, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { createCandidate } from '@org/candidates/data';
+import { CandidatesService, createCandidate } from '@org/candidates/data';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,14 +20,24 @@ import * as XLSX from 'xlsx';
         <mat-label>Name</mat-label>
         <input matInput id="name" formControlName="name" type="text" />
         @if (submitted && form().get('name')?.invalid) {
-          <mat-error>Name is required</mat-error>
+          @if (form().get('name')?.hasError('required')) {
+            <mat-error>Name is required</mat-error>
+          }
+          @if (form().get('name')?.hasError('maxlength')) {
+            <mat-error>Name must be 100 characters or less</mat-error>
+          }
         }
       </mat-form-field>
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Surname</mat-label>
         <input matInput id="surname" formControlName="surname" type="text" />
         @if (submitted && form().get('surname')?.invalid) {
-          <mat-error>Surname is required</mat-error>
+          @if (form().get('surname')?.hasError('required')) {
+            <mat-error>Surname is required</mat-error>
+          }
+          @if (form().get('surname')?.hasError('maxlength')) {
+            <mat-error>Surname must be 100 characters or less</mat-error>
+          }
         }
       </mat-form-field>
       
@@ -82,10 +92,11 @@ export class CandidateFormComponent {
   
   @Output() submittedSuccessfully = new EventEmitter<void>();
   private readonly fb = new FormBuilder();
+  private readonly candidatesService = inject(CandidatesService);
   private readonly store = inject(Store);
   readonly form = signal(this.fb.group({
-    name: ['', Validators.required],
-    surname: ['', Validators.required],
+    name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
+    surname: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
   }));
   submitted = false;
   
@@ -296,12 +307,20 @@ export class CandidateFormComponent {
         surname: surname as string ?? '',
         excel: this.excelFile
       };
-      this.store.dispatch(createCandidate({ candidate: newCandidate }));
-      this.form().reset();
-      this.submitted = false;
-      this.resetFileValidation();
-      // Aquí puedes enviar this.excelFile al backend si es necesario
-      this.submittedSuccessfully.emit();
+      this.candidatesService.createCandidate(newCandidate as any).subscribe({
+        next: (result) => {
+          if (result) {
+            this.store.dispatch(createCandidate({ candidate: result }));
+            this.form().reset();
+            this.submitted = false;
+            this.resetFileValidation();
+            this.submittedSuccessfully.emit();
+          }
+        },
+        error: (err) => {
+          console.error('Error creating candidate:', err);
+        }
+      });
     } else {
       this.form().markAllAsTouched();
     }

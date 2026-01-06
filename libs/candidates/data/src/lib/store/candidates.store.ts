@@ -30,7 +30,7 @@ export const initialState: CandidatesState = {
 
 export const loadCandidates = createAction('[Candidates] Load Candidates');
 export const setCandidates = createAction('[Candidates] Set Candidates', props<{ candidates: Candidate[] }>());
-export const createCandidate = createAction('[Candidates] Create Candidate', props<{ candidate: CandidateInfo }>());
+export const createCandidate = createAction('[Candidates] Create Candidate', props<{ candidate: Candidate }>());
 export const deleteCandidate = createAction('[Candidates] Delete Candidate', props<{ id: number }>());
 
 
@@ -63,7 +63,7 @@ const candidatesReducer = sessionStorageMetaReducer(
     on(setCandidates, (state, { candidates }) => ({ ...state, candidates })),
     on(createCandidate, (state, { candidate }) => ({
       ...state,
-      candidates: [candidate as any, ...state.candidates]
+      candidates: [candidate, ...state.candidates]
     })),
     on(deleteCandidate, (state, { id }) => ({
       ...state,
