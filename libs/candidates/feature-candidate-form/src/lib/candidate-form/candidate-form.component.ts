@@ -61,7 +61,6 @@ import { catchError } from 'rxjs/operators';
       </mat-form-field>
       
       <div class="file-upload-field">
-        <label class="file-upload-label">Excel File:</label>
         <p class="file-upload-instructions">
           Upload an Excel file with 3 columns and only 1 data row:
         </p>

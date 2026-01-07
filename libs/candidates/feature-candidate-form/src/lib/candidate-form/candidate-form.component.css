@@ -3,6 +3,7 @@ mat-error {
   font-size: 0.97rem;
   margin-left: 0;
   padding-left: 0;
+  padding-top: 6px;
   text-align: left;
   width: 100%;
   display: block;
@@ -18,8 +19,16 @@ form {
   width: 100%;
   margin-bottom: 0;
 }
+:host ::ng-deep .form-field .mat-mdc-text-field-wrapper {
+  height: 48px;
+}
+:host ::ng-deep .form-field .mat-mdc-form-field-flex {
+  height: 48px;
+}
 input[matInput] {
   padding-left: 16px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 .add-candidate-btn {
   background: #e53935;
@@ -49,7 +58,6 @@ input[matInput] {
 .file-upload-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 
 .file-upload-label {
@@ -111,6 +119,7 @@ input[matInput] {
 .file-validation-message {
   font-size: 0.97rem;
   margin-left: 0;
+  padding-top: 10px;
   padding-left: 0;
   text-align: left;
   width: 100%;
