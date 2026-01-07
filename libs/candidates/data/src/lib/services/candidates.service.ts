@@ -1,5 +1,6 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { isPlatformBrowser } from '@angular/common';
 import { Observable, map, catchError, of } from 'rxjs';
 import { Candidate, ApiResponse } from '@org/models';
 import { Store } from '@ngrx/store';
@@ -10,7 +11,8 @@ import { candidatesFeature } from '../store/candidates.store';
 })
 export class CandidatesService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:3000/api';
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly apiUrl = this.getApiUrl();
   private readonly store = inject(Store);
 
   // Signals for state management
@@ -19,6 +21,16 @@ export class CandidatesService {
   
   readonly loading = this.loadingSignal.asReadonly();
   readonly error = this.errorSignal.asReadonly();
+
+  private getApiUrl(): string {
+    if (isPlatformBrowser(this.platformId)) {
+      const hostname = window.location.hostname;
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'http://localhost:3000/api';
+      }
+    }
+    return 'https://candidates-api-ottt.onrender.com/api';
+  }
 
   getCandidates() {
     return this.store.select(candidatesFeature.selectCandidates).pipe(
