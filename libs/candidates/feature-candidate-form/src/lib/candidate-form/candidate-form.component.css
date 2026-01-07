@@ -20,10 +20,10 @@ form {
   margin-bottom: 0;
 }
 :host ::ng-deep .form-field .mat-mdc-text-field-wrapper {
-  height: 48px;
+  height: 50px;
 }
 :host ::ng-deep .form-field .mat-mdc-form-field-flex {
-  height: 48px;
+  height: 50px;
 }
 input[matInput] {
   padding-left: 16px;
