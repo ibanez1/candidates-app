@@ -82,7 +82,7 @@ export class AppService {
 
       // Read the first sheet
       const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-      const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 }) as any[][];
+      const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 }) as (string | number | boolean)[][];
 
       // Validate that it has content
       if (jsonData.length === 0) {
@@ -109,7 +109,7 @@ export class AppService {
 
       // Validate that the columns are correct
       const requiredColumns = ['seniority', 'years of experience', 'availability'];
-      const actualColumns = firstRow.map((col: any) => 
+      const actualColumns = firstRow.map((col: unknown) => 
         String(col || '').toLowerCase().trim()
       );
       
@@ -151,7 +151,7 @@ export class AppService {
       }
 
       // Validate that all data cells are filled
-      const hasEmptyValues = dataRow.some((value: any) => 
+      const hasEmptyValues = dataRow.some((value: unknown) => 
         value === null || value === undefined || String(value).trim() === ''
       );
 

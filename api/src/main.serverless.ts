@@ -3,7 +3,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import serverless from '@vendia/serverless-express';
 
-let cachedServer: any;
+type ServerlessHandler = (event: HandlerEvent, context: HandlerContext) => Promise<{
+  statusCode: number;
+  headers: Record<string, string>;
+  body: string;
+}>;
+
+let cachedServer: ServerlessHandler | null = null;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
