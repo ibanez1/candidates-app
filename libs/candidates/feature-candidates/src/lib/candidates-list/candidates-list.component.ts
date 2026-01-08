@@ -122,10 +122,9 @@ export class CandidateListComponent implements OnInit {
         this.candidates.set(response.items);
         this.loading.set(false);
       },
-      error: (err) => {
+      error: () => {
         this.error.set('Failed to load candidates. Please try again.');
         this.loading.set(false);
-        console.error('Error loading candidates:', err);
       },
     });
   }

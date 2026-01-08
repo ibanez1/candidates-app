@@ -4,6 +4,17 @@
   "projectType": "application",
   "sourceRoot": "apps/candidates-e2e/src",
   "implicitDependencies": ["candidates"],
-  "// targets": "to see all targets run: nx show project candidates-e2e --web",
-  "targets": {}
+  "targets": {
+    "e2e": {
+      "executor": "@nx/playwright:playwright",
+      "options": {
+        "config": "apps/candidates-e2e/playwright.config.ts"
+      },
+      "configurations": {
+        "ci": {
+          "ci": true
+        }
+      }
+    }
+  }
 }

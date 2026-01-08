@@ -22,13 +22,15 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
-  /* Run your local dev server before starting the tests */
+  /* Start the Angular SSR dev server before tests */
   webServer: {
-    command: 'npx nx run candidates:serve',
+    command: 'npx nx run candidates:serve:development',
     url: 'http://localhost:4200',
-    reuseExistingServer: true,
+    reuseExistingServer: !process.env['CI'],
+    timeout: 180000,
     cwd: workspaceRoot,
   },
+  // Nx preset manages dev server; no extra webServer here to avoid double-serve
   projects: [
     {
       name: 'chromium',

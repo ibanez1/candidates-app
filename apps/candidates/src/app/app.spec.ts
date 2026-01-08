@@ -2,7 +2,6 @@ import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { App } from './app';
 import { appRoutes } from './app.routes';
 import { provideRouter } from '@angular/router';
-import { By } from '@angular/platform-browser';
 
 describe('App', () => {
   let component: App;
@@ -23,27 +22,44 @@ describe('App', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render title in header', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Nx Candidates Demo');
+  it('should have title property set to "Candidates Tool"', () => {
+    expect(component.title).toBe('Candidates Tool');
   });
 
-  it('should render navigation links', () => {
-    const navLinks = fixture.debugElement.queryAll(By.css('nav a'));
-    expect(navLinks.length).toBeGreaterThan(0);
-    expect(navLinks[0].nativeElement.textContent).toContain('Candidates');
-    expect(navLinks[0].nativeElement.getAttribute('routerLink')).toBe(
-      '/candidates'
-    );
+  it('should render title in header', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const header = compiled.querySelector('.app-header h1');
+    expect(header).toBeTruthy();
+    expect(header?.textContent?.trim()).toBe('Candidates Tool');
+  });
+
+  it('should have app-header with container', () => {
+    const header = fixture.nativeElement.querySelector('.app-header');
+    expect(header).toBeTruthy();
+    const container = header?.querySelector('.container');
+    expect(container).toBeTruthy();
+  });
+
+  it('should have main section with app-main class', () => {
+    const main = fixture.nativeElement.querySelector('.app-main');
+    expect(main).toBeTruthy();
+    expect(main?.tagName).toBe('MAIN');
   });
 
   it('should render footer with correct copyright', () => {
     const footer = fixture.nativeElement.querySelector('.app-footer');
     expect(footer).toBeTruthy();
-    expect(footer?.textContent).toContain('© 2025 Nx Candidates Demo');
-    expect(footer?.textContent).toContain(
-      'Frontend (Angular) + Backend (Express) + Shared Libraries'
-    );
+    expect(footer?.textContent).toContain('© 2025 Candidates Tool - Alejandro Ibáñez');
+  });
+
+  it('should render footer with technology stack information', () => {
+    const footer = fixture.nativeElement.querySelector('.app-footer');
+    expect(footer?.textContent).toContain('Frontend (Angular) + Backend (NestJS) + Shared Libraries');
+  });
+
+  it('should have footer with container', () => {
+    const footer = fixture.nativeElement.querySelector('.app-footer .container');
+    expect(footer).toBeTruthy();
   });
 
   it('should have router outlet for dynamic content', () => {

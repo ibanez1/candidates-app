@@ -2,7 +2,7 @@ import { inject, Injectable, signal, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable, map, catchError, of } from 'rxjs';
-import { Candidate, ApiResponse } from '@org/models';
+import { Candidate, CandidateInfo, ApiResponse } from '@org/models';
 import { Store } from '@ngrx/store';
 import { candidatesFeature } from '../store/candidates.store';
 
@@ -38,7 +38,7 @@ export class CandidatesService {
     );
   }
 
-  createCandidate(candidateInfo: any): Observable<Candidate | null> {
+  createCandidate(candidateInfo: CandidateInfo): Observable<Candidate | null> {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
@@ -49,7 +49,8 @@ export class CandidatesService {
     formData.append('surname', candidateInfo.surname);
     
     if (candidateInfo.excel) {
-      formData.append('excel', candidateInfo.excel, candidateInfo.excel.name);
+      const file = candidateInfo.excel as File; // in browser this is always a File
+      formData.append('excel', file, file.name);
     }
 
     return this.http
@@ -67,7 +68,6 @@ export class CandidatesService {
           // Extract error message from backend response
           const errorMessage = error.error?.error || error.message || 'An error occurred while creating the candidate';
           this.errorSignal.set(errorMessage);
-          console.error('Error creating candidate:', error);
           return of(null);                  
         }),
       );

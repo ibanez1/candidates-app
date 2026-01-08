@@ -9,5 +9,5 @@ import { RouterModule } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
-  protected title = 'Candidates Tool';
+  title = 'Candidates Tool';
 }

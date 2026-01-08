@@ -362,7 +362,6 @@ export class CandidateFormComponent {
               this.errorMessage.set('An error occurred while creating the candidate');
             }
             
-            console.error('Error creating candidate:', componentError || serviceError);
           } else {
             // Success case
             this.store.dispatch(createCandidate({ candidate: result as any }));

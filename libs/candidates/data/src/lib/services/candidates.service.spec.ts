@@ -3,22 +3,53 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { CandidatesService } from './candidates.service';
 import { Candidate, ApiResponse } from '@org/models';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { candidatesFeature } from '../store/candidates.store';
 
 describe('CandidatesService', () => {
   let service: CandidatesService;
   let httpMock: HttpTestingController;
-  const apiUrl = 'http://localhost:3333/api';
+  let store: MockStore;
+  const apiUrl = 'http://localhost:3000/api';
+
+  const mockCandidates: Candidate[] = [
+    {
+      id: 1,
+      name: 'John',
+      surname: 'Doe',
+      seniority: 'senior',
+      years: 5,
+      availability: true
+    },
+    {
+      id: 2,
+      name: 'Jane',
+      surname: 'Smith',
+      seniority: 'junior',
+      years: 2,
+      availability: false
+    }
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideMockStore({
+          selectors: [
+            {
+              selector: candidatesFeature.selectCandidates,
+              value: mockCandidates
+            }
+          ]
+        }),
         CandidatesService
       ],
     });
     service = TestBed.inject(CandidatesService);
     httpMock = TestBed.inject(HttpTestingController);
+    store = TestBed.inject(MockStore);
   });
 
   afterEach(() => {
@@ -29,125 +60,189 @@ describe('CandidatesService', () => {
     expect(service).toBeTruthy();
   });
 
-  // describe('getCandidates', () => {
-  //   const mockProductsResponse: ApiResponse<PaginatedResponse<Product>> = {
-  //     success: true,
-  //     data: {
-  //       items: [
-  //         {
-  //           id: '1',
-  //           name: 'Product 1',
-  //           description: 'Description 1',
-  //           price: 100,
-  //           imageUrl: 'image1.jpg',
-  //           category: 'Electronics',
-  //           inStock: true,
-  //           rating: 4.5,
-  //           reviewCount: 10,
-  //         },
-  //         {
-  //           id: '2',
-  //           name: 'Product 2',
-  //           description: 'Description 2',
-  //           price: 200,
-  //           imageUrl: 'image2.jpg',
-  //           category: 'Clothing',
-  //           inStock: false,
-  //           rating: 3.5,
-  //           reviewCount: 5,
-  //         },
-  //       ],
-  //       total: 2,
-  //       page: 1,
-  //       pageSize: 12,
-  //       totalPages: 1,
-  //     },
-  //   };
+  describe('getCandidates', () => {
+    it('should return candidates from store', (done) => {
+      service.getCandidates().subscribe(response => {
+        expect(response.items).toEqual(mockCandidates);
+        expect(response.items.length).toBe(2);
+        done();
+      });
+    });
 
-  //   it('should return products with default pagination', () => {
-  //     service.getProducts().subscribe((response) => {
-  //       expect(response.items.length).toBe(2);
-  //       expect(response.total).toBe(2);
-  //       expect(response.page).toBe(1);
-  //       expect(service.loading()).toBeFalsy();
-  //       expect(service.error()).toBeNull();
-  //     });
+    it('should return empty array when no candidates in store', (done) => {
+      store.overrideSelector(candidatesFeature.selectCandidates, []);
+      store.refreshState();
 
-  //     const req = httpMock.expectOne(`${apiUrl}/products?page=1&pageSize=12`);
-  //     expect(req.request.method).toBe('GET');
-  //     req.flush(mockProductsResponse);
-  //   });
+      service.getCandidates().subscribe(response => {
+        expect(response.items).toEqual([]);
+        expect(response.items.length).toBe(0);
+        done();
+      });
+    });
+  });
 
-  //   it('should apply filters when provided', () => {
-  //     const filter: ProductFilter = {
-  //       category: 'Electronics',
-  //       minPrice: 50,
-  //       maxPrice: 150,
-  //       inStock: true,
-  //       searchTerm: 'test',
-  //     };
+  describe('createCandidate', () => {
+    const mockSuccessResponse: ApiResponse<Candidate> = {
+      success: true,
+      data: {
+        id: 3,
+        name: 'Bob',
+        surname: 'Johnson',
+        seniority: 'senior',
+        years: 8,
+        availability: true
+      },
+      message: 'Candidate created successfully'
+    };
 
-  //     service.getProducts(filter, 2, 20).subscribe((response) => {
-  //       expect(response).toBeTruthy();
-  //     });
+    it('should create candidate with valid data', (done) => {
+      const candidateInfo = {
+        id: 3,
+        name: 'Bob',
+        surname: 'Johnson',
+        excel: new File(['test'], 'test.xlsx', { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      };
 
-  //     const req = httpMock.expectOne(
-  //       `${apiUrl}/products?page=2&pageSize=20&category=Electronics&minPrice=50&maxPrice=150&inStock=true&searchTerm=test`
-  //     );
-  //     expect(req.request.method).toBe('GET');
-  //     req.flush(mockProductsResponse);
-  //   });
-
-  //   it('should handle error response', () => {
-  //     const errorResponse: ApiResponse<PaginatedResponse<Product>> = {
-  //       success: false,
-  //       error: 'Server error',
-  //       data: undefined as unknown
-  //     };
-
-  //     // Silence console.error for this test
-  //     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
-
-  //     service.getProducts().subscribe((response) => {
-  //       expect(response.items).toEqual([]);
-  //       expect(response.total).toBe(0);
-  //       expect(service.error()).toContain('Server error');
-  //     });
-
-  //     const req = httpMock.expectOne(`${apiUrl}/products?page=1&pageSize=12`);
-  //     req.flush(errorResponse);
-
-  //     consoleErrorSpy.mockRestore();
-  //   });
-
-  //   it('should handle network error', () => {
-  //     // Silence console.error for this test
-  //     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
-
-  //     service.getProducts().subscribe((response) => {
-  //       expect(response.items).toEqual([]);
-  //       expect(response.total).toBe(0);
-  //       expect(service.error()).toBeTruthy();
-  //     });
-
-  //     const req = httpMock.expectOne(`${apiUrl}/products?page=1&pageSize=12`);
-  //     req.error(new ProgressEvent('Network error'));
-
-  //     consoleErrorSpy.mockRestore();
-  //   });
-  // });
-
-  describe('loading and error signals', () => {
-    it('should set loading to true when fetching candidates', () => {
-      expect(service.loading()).toBeFalsy();
-
-      // service.getCandidates().subscribe();
-      expect(service.loading()).toBeTruthy();
+      service.createCandidate(candidateInfo).subscribe(candidate => {
+        expect(candidate).toEqual(mockSuccessResponse.data);
+        expect(service.loading()).toBeFalsy();
+        expect(service.error()).toBeNull();
+        done();
+      });
 
       const req = httpMock.expectOne(`${apiUrl}/candidates`);
-      req.flush({ success: true, data: { items: [], total: 0, page: 1, pageSize: 12, totalPages: 0 } });
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body instanceof FormData).toBeTruthy();
+      req.flush(mockSuccessResponse);
+    });
+
+    it('should set loading to true when creating candidate', () => {
+      const candidateInfo = {
+        id: 3,
+        name: 'Bob',
+        surname: 'Johnson',
+        excel: new File(['test'], 'test.xlsx')
+      };
 
       expect(service.loading()).toBeFalsy();
+
+      service.createCandidate(candidateInfo).subscribe();
+      
+      // Loading should be true during request
+      const req = httpMock.expectOne(`${apiUrl}/candidates`);
+      req.flush(mockSuccessResponse);
+
+      // Loading should be false after request
+      expect(service.loading()).toBeFalsy();
+    });
+
+    it('should handle error response from backend', (done) => {
+      const candidateInfo = {
+        id: 3,
+        name: 'Bob',
+        surname: 'Johnson',
+        excel: new File(['test'], 'test.xlsx')
+      };
+
+      const errorResponse: ApiResponse<Candidate> = {
+        success: false,
+        error: 'Missing required fields',
+        data: undefined as unknown as Candidate
+      };
+
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+      service.createCandidate(candidateInfo).subscribe(candidate => {
+        expect(candidate).toBeNull();
+        expect(service.loading()).toBeFalsy();
+        expect(service.error()).toBe('Missing required fields');
+        consoleErrorSpy.mockRestore();
+        done();
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/candidates`);
+      req.flush(errorResponse);
+    });
+
+    it('should handle network error', (done) => {
+      const candidateInfo = {
+        id: 3,
+        name: 'Bob',
+        surname: 'Johnson',
+        excel: new File(['test'], 'test.xlsx')
+      };
+
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+      service.createCandidate(candidateInfo).subscribe(candidate => {
+        expect(candidate).toBeNull();
+        expect(service.loading()).toBeFalsy();
+        expect(service.error()).toBeTruthy();
+        expect(service.error()).toContain('Http failure response');
+        consoleErrorSpy.mockRestore();
+        done();
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/candidates`);
+      req.error(new ProgressEvent('Network error'));
+    });
+
+    it('should append FormData correctly', () => {
+      const candidateInfo = {
+        id: 123,
+        name: 'Test',
+        surname: 'User',
+        excel: new File(['content'], 'test.xlsx')
+      };
+
+      service.createCandidate(candidateInfo).subscribe();
+
+      const req = httpMock.expectOne(`${apiUrl}/candidates`);
+      const formData = req.request.body as FormData;
+      
+      expect(formData.get('id')).toBe('123');
+      expect(formData.get('name')).toBe('Test');
+      expect(formData.get('surname')).toBe('User');
+      expect(formData.get('excel')).toBeTruthy();
+      
+      req.flush(mockSuccessResponse);
+    });
+  });
+
+  describe('error signal', () => {
+    it('should clear error on new request', () => {
+      const candidateInfo = {
+        id: 1,
+        name: 'Test',
+        surname: 'User',
+        excel: new File(['test'], 'test.xlsx')
+      };
+
+      // First request with error
+      service.createCandidate(candidateInfo).subscribe();
+      const req1 = httpMock.expectOne(`${apiUrl}/candidates`);
+      req1.flush({ success: false, error: 'Error 1', data: undefined as unknown as Candidate });
+
+      expect(service.error()).toBe('Error 1');
+
+      // Second request should clear previous error
+      service.createCandidate(candidateInfo).subscribe();
+      
+      // Error should be cleared before making new request
+      expect(service.error()).toBeNull();
+
+      const req2 = httpMock.expectOne(`${apiUrl}/candidates`);
+      req2.flush({ success: true, data: mockCandidates[0], message: 'Success' });
+    });
+  });
+
+  describe('loading signal', () => {
+    it('should have readonly loading signal', () => {
+      expect(service.loading()).toBeFalsy();
+    });
+
+    it('should have readonly error signal', () => {
+      expect(service.error()).toBeNull();
     });
   });
 });
